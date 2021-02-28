@@ -7,7 +7,7 @@
 ################################################################################
 
 # To Get List for Rebuilding or TLD
-docker ps --format '{{.Names}}' >/tmp/backup.list
+docker ps -aq --format='{{.Names}}' >/tmp/backup.list
 sed -i -e "/traefik/d" /tmp/backup.list
 sed -i -e "/watchtower/d" /tmp/backup.list
 sed -i -e "/wp-*/d" /tmp/backup.list
@@ -121,8 +121,10 @@ tldtype=$(cat /var/plexguide/tld.type)
 if [[ "$old" != "$new" && "$old" != "NOT-SET" ]]; then
 
   if [[ "$tldtype" == "standard" ]]; then
-    if [ -e "/opt/coreapps/apps/$old.yml" ]; then ansible-playbook /opt/coreapps/apps/$old.yml; fi
-    if [ -e "/opt/communityapps/$old.yml" ]; then ansible-playbook /opt/communityapps/apps/$old.yml; fi
+    if [ -e "/opt/coreapps/apps/$app.yml" ]; then ansible-playbook /opt/coreapps/apps/$app.yml; fi
+    if [ -e "/opt/communityapps/apps/$app.yml" ]; then ansible-playbook /opt/communityapps/apps/$app.yml; fi
+    if [ -e "/opt/mycontainers/apps/$old.yml" ]; then ansible-playbook /opt/mycontainers/apps/$old.yml; fi
+    if [ -e "/opt/mycontainers/$old.yml" ]; then ansible-playbook /opt/mycontainers/$old.yml; fi
   elif [[ "$tldtype" == "wordpress" ]]; then
     echo "$old" >/tmp/wp_id
     ansible-playbook /opt/pgpress/wordpress.yml
@@ -131,8 +133,10 @@ if [[ "$old" != "$new" && "$old" != "NOT-SET" ]]; then
 
 fi
 
-if [ -e "/opt/coreapps/apps/$new.yml" ]; then ansible-playbook /opt/coreapps/apps/$new.yml; fi
-if [ -e "/opt/communityapps/$new.yml" ]; then ansible-playbook /opt/communityapps/apps/$new.yml; fi
+if [ -e "/opt/coreapps/apps/$app.yml" ]; then ansible-playbook /opt/coreapps/apps/$app.yml; fi
+if [ -e "/opt/communityapps/apps/$app.yml" ]; then ansible-playbook /opt/communityapps/apps/$app.yml; fi
+if [ -e "/opt/mycontainers/apps/$old.yml" ]; then ansible-playbook /opt/mycontainers/apps/$old.yml; fi
+if [ -e "/opt/mycontainers/$old.yml" ]; then ansible-playbook /opt/mycontainers/$old.yml; fi
 echo "standard" >/var/plexguide/tld.type
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

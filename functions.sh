@@ -59,7 +59,6 @@ seconds as a result of the check.
 EOF
   echo "$typed2" >/var/plexguide/server.delaycheck
   read -p 'Acknowledge Info | Press [ENTER] ' typed </dev/tty
-
 }
 
 destroytraefik() {
@@ -357,7 +356,6 @@ EOF
 
   tee <<-EOF
 
-
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🚀 Rebuilding Portainer
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -371,7 +369,7 @@ EOF
 
   cname="portainer"
   if [[ -f "/var/plexguide/portainer.cname" ]]; then
-    cname=$(cat "/var/plexguide/portainer.cname")
+     cname=$(cat "/var/plexguide/portainer.cname")
   fi
 
   tee <<-EOF
@@ -400,7 +398,7 @@ EOF
 
   cname="portainer"
   if [[ -f "/var/plexguide/portainer.cname" ]]; then
-    cname=$(cat /var/plexguide/portainer.cname)
+     cname=$(cat /var/plexguide/portainer.cname)
   fi
 
   touch /opt/appdata/plexguide/traefikportainer.check
@@ -408,7 +406,7 @@ EOF
 
   # If Portainer Detection Failed
   if [[ $(cat /opt/appdata/plexguide/traefikportainer.check) == "" ]]; then
-    rm -rf /opt/appdata/plexguide/traefikportainer.check
+     rm -rf /opt/appdata/plexguide/traefikportainer.check
 
     tee <<-EOF
 
@@ -480,7 +478,6 @@ EOF
   sed -i -e "/authclient/d" /var/plexguide/container.running
   sed -i -e "/dockergc/d" /var/plexguide/container.running
   sed -i -e "/oauth/d" /var/plexguide/container.running
- 
   sed -i -e "/portainer/d" /var/plexguide/container.running # Already Rebuilt
 
   count=$(wc -l </var/plexguide/container.running)
@@ -507,11 +504,11 @@ EOF
 EOF
     echo "$app" >/tmp/program_var
     sleep 1.5
-
     #Rebuild Depending on Location
     if [ -e "/opt/coreapps/apps/$app.yml" ]; then ansible-playbook /opt/coreapps/apps/$app.yml; fi
-    if [ -e "/opt/communityapps/$app.yml" ]; then ansible-playbook /opt/communityapps/apps/$app.yml; fi
-
+    if [ -e "/opt/communityapps/apps/$app.yml" ]; then ansible-playbook /opt/communityapps/apps/$app.yml; fi
+    if [ -e "/opt/mycontainers/apps/$old.yml" ]; then ansible-playbook /opt/mycontainers/apps/$old.yml; fi
+    if [ -e "/opt/mycontainers/$old.yml" ]; then ansible-playbook /opt/mycontainers/$old.yml; fi
   done
 
   tee <<-EOF
@@ -535,9 +532,7 @@ EOF
   pnum=0
   mkdir -p /var/plexguide/prolist
   rm -rf /var/plexguide/prolist/* 1>/dev/null 2>&1
-
   ls -la "/opt/traefik/providers" | awk '{print $9}' | tail -n +4 >/var/plexguide/prolist/prolist.sh
-
   while read p; do
     let "pnum++"
     echo "$p" >"/var/plexguide/prolist/$pnum"
@@ -592,9 +587,9 @@ traefikbuilder() {
     echo $(cat "/var/plexguide/traefik/$provider/$p") >>/opt/traefik/provider.yml
   done </var/plexguide/prolist/prolist.sh
 
-  if [[ $(docker ps --format '{{.Names}}' | grep traefik) == "traefik" ]]; then
-    docker stop traefik 1>/dev/null 2>&1
-    docker rm traefik 1>/dev/null 2>&1
+  if [[ $(docker ps -aq --format='{{.Names}}' | grep traefik) == "traefik" ]]; then
+     docker stop traefik 1>/dev/null 2>&1
+     docker rm traefik 1>/dev/null 2>&1
   fi
 
   file="/opt/appdata/traefik"
@@ -610,7 +605,7 @@ traefikpaths() {
 }
 
 traefikstatus() {
-  if [ "$(docker ps --format '{{.Names}}' | grep traefik)" == "traefik" ]; then
-    deployed="DEPLOYED"
+  if [ "$(docker ps -aq --format='{{.Names}}' | grep traefik)" == "traefik" ]; then
+     deployed="DEPLOYED"
   else deployed="NOT DEPLOYED"; fi
 }
